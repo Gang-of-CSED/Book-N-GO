@@ -13,7 +13,7 @@ function App() {
       <Routes>
         {/* <Route path='/' element={<HomePage/>}/> */}
         {/* <Route path='/workspace' element={<WorkSpace/>}/> */}
-        <Route path='/hall' element={<HallDetails/>}/>
+        <Route path='/hall/:id' element={<HallDetails/>}/>
         {/* <Route path='/login' element={<LoginPage/>}/> */}
 
       </Routes>
