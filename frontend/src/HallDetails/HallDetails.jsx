@@ -3,7 +3,6 @@ import image from "../assets/Alexandria-Library.png";
 import styles from "./HallDetails.module.css";
 import Rating from '@mui/material/Rating';
 import StarIcon from '@mui/icons-material/Star';
-import { Carousel } from "@material-tailwind/react";
 import { useParams } from "react-router-dom";
 
 export const HallDetails = () => {
@@ -34,9 +33,7 @@ export const HallDetails = () => {
     <div className={styles["hall-details__wrapper"]}>
       <div className={styles["hall-details__container"]}>
         <div className={styles["hall-details__preview"]}>
-          <Carousel className="rounded-xl">
-            <img src={image} alt="Hall Preview"/>
-          </Carousel>
+          <img src={image} alt="Hall Preview"/>
           <h1>{data['name']}</h1>
           <button>Book Now!</button>
         </div>
