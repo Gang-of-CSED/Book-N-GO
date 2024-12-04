@@ -1,5 +1,7 @@
 package com.example.book_n_go.model;
 
+import java.util.Collection;
+
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -10,7 +12,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Entity
 @Table(name = "users")
-public class User {
+public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -30,5 +32,11 @@ public class User {
     // @ElementCollection(targetClass = Role.class)
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
+
     private Role role;
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return role.getAuthorities();
+    }
 }
