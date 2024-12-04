@@ -1,5 +1,8 @@
 package com.example.book_n_go.model;
 
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+
 @RequiredArgsConstructor
 public enum Permission {
 

@@ -1,25 +1,28 @@
 package com.example.book_n_go.model;
 
+import java.util.Set;
 import java.util.stream.Collectors;
+
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 public enum Role {
 
     CLIENT(
-        set.of(
+        Set.of(
             Permission.CLIENT_READ,
             Permission.CLIENT_WRITE
         )
     ),
 
     PROVIDER(
-        set.of(
+        Set.of(
             Permission.PROVIDER_READ,
             Permission.PROVIDER_WRITE
         )
     ),
 
     ADMIN(
-        set.of(
+        Set.of(
             Permission.ADMIN_READ,
             Permission.ADMIN_WRITE,
             Permission.CLIENT_READ,
@@ -29,11 +32,18 @@ public enum Role {
         )
     );
 
-    @Getter
-    private final set<Permission> permissions;
+    private final Set<Permission> permissions;
 
-    public set<SimpleGrantedAuthority> getAuthorities() {
-        set<SimpleGrantedAuthority> authorities = getPermissions().stream()
+    Role(Set<Permission> permissions) {
+        this.permissions = permissions;
+    }
+
+    public Set<Permission> getPermissions() {
+        return permissions;
+    }
+
+    public Set<SimpleGrantedAuthority> getAuthorities() {
+        Set<SimpleGrantedAuthority> authorities = getPermissions().stream()
             .map(permission -> new SimpleGrantedAuthority(permission.getPermission()))
             .collect(Collectors.toSet());
         authorities.add(new SimpleGrantedAuthority("ROLE_" + this.name()));
