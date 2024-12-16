@@ -7,6 +7,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import com.example.book_n_go.model.Hall;
 import java.util.*;
+import com.example.book_n_go.dto.HallsFilterRequest;
+import com.example.book_n_go.service.HallsListFilterService;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:3000")
@@ -85,4 +87,20 @@ public class HallController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    @Autowired
+    private HallsListFilterService hallsListFilterService;
+    @PostMapping("/filterHalls")
+    public ResponseEntity<List<Hall>> filterHalls(@RequestBody HallsFilterRequest request) {
+        try {
+            List<Hall> halls = hallsListFilterService.applyCriterias(request);
+            if (halls.isEmpty()) {
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            }
+            return new ResponseEntity<>(halls, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+    
 }
