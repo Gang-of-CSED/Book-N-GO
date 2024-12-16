@@ -1,4 +1,6 @@
-import React from 'react';
+// import React from 'react';
+import React, { useState, useEffect } from 'react';
+
 import AmenitiesFilter from './AmenitiesFilter';
 import SizeFilter from './SizeFilter';
 import RatingFilter from './RatingFilter';
@@ -8,6 +10,7 @@ import styles from './Filters.module.css';
 
 const Filters = () => {
   const { filters, updateFilters, fetchData } = useHalls();
+  const [selectedAmenities, setSelectedAmenities] = useState([]);
 
   const handleApplyFilters = () => {
     fetchData();
@@ -19,11 +22,11 @@ const Filters = () => {
         selected={filters.amenities}
         onChange={(amenities) => updateFilters({ amenities })}
       />
-      <SizeFilter 
+      {/* <SizeFilter 
         min={filters.minSize}
         max={filters.maxSize}
         onChange={(size) => updateFilters(size)}
-      />
+      /> */}
       <RatingFilter 
         rating={filters.rating}
         onChange={(rating) => updateFilters({ rating })}

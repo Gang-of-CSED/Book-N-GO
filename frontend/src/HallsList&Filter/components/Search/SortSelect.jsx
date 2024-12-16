@@ -1,7 +1,8 @@
-import React from 'react';
+import React from 'react'; 
 import styles from './Search.module.css';
 
 const sortOptions = [
+  { value: 'none', label: 'None' },
   { value: 'rating', label: 'Rating' },
   { value: 'capacity', label: 'Capacity' },
   { value: 'title', label: 'Title' }
@@ -13,7 +14,7 @@ const SortSelect = ({ value, onChange }) => {
       <select 
         className={styles.select}
         value={value}
-        onChange={(e) => onChange(e.target.value)}
+        onChange={onChange} // Pass the event directly
       >
         {sortOptions.map(option => (
           <option key={option.value} value={option.value}>

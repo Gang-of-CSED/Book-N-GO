@@ -17,17 +17,26 @@ export const HallProvider = ({ children }) => {
   const [totalPages, setTotalPages] = useState(1);
   const [currentPage, setCurrentPage] = useState(1);
   const [filters, setFilters] = useState({
-    search: '',
     amenities: [],
-    minSize: 4,
-    maxSize: 20,
     rating: 0,
-    sortBy: 'rating',
     pageSize: 6,
     page: 1
   });
+  const [sortBy, setSortBy] = useState('none');
+  const [searchWord, setSearchWord] = useState('');
+
+  const updateSortBy = useCallback((sortBy) => {
+    console.log("updateSortBy",sortBy);
+    setSortBy(sortBy);
+  }, []);
+
+  const updateSearchWord = useCallback((searchWord) => {
+    console.log("updateSearchWord",searchWord);
+    setSearchWord(searchWord);
+  }, []);
 
   const updateFilters = useCallback((newFilters) => {
+    console.log("updateFilters",newFilters);
     setFilters(prev => ({ ...prev, ...newFilters, page: 1 }));
   }, []);
 
@@ -60,9 +69,13 @@ export const HallProvider = ({ children }) => {
     totalPages,
     currentPage,
     filters,
+    sortBy,
+    searchWord,
     updateFilters,
     updatePage,
-    fetchData
+    fetchData,
+    updateSortBy,
+    updateSearchWord,
   };
 
   return (
