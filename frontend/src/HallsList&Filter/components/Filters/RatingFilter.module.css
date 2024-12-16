@@ -1,0 +1,32 @@
+.ratingContainer {
+  margin-bottom: 1.5rem;
+}
+
+.title {
+  color: white;
+  margin-bottom: 0.5rem;
+}
+
+.starsContainer {
+  display: flex;
+  font-size: 1.5rem;
+}
+
+.star {
+  cursor: pointer;
+  color: #f97316;
+  transition: transform 0.1s ease-in-out;
+}
+
+.star:hover {
+  transform: scale(1.1);
+}
+
+.starFilled {
+  composes: star;
+}
+
+.starEmpty {
+  composes: star;
+  opacity: 0.5;
+}

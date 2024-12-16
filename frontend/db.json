@@ -1,0 +1,67 @@
+{
+    "halls": [
+      {
+        "id": 1,
+        "title": "Grand Hall",
+        "image": "/imgs/1.jpg",
+        "rating": 4.5,
+        "capacity": 500
+      },
+      {
+        "id": 2,
+        "title": "Conference Room A",
+        "image": "/imgs/1.jpg",
+        "rating": 4.0,
+        "capacity": 200
+      },
+      {
+        "id": 3,
+        "title": "Banquet Hall",
+        "image": "/imgs/1.jpg",
+        "rating": 4.8,
+        "capacity": 300
+      },
+      {
+        "id": 4,
+        "title": "Meeting Room B",
+        "image": "/imgs/1.jpg",
+        "rating": 3.9,
+        "capacity": 100
+      },
+      {
+        "id": 5,
+        "title": "Exhibition Center",
+        "image": "/imgs/1.jpg",
+        "rating": 4.7,
+        "capacity": 1000
+      },
+      {
+        "id": 6,
+        "title": "Auditorium",
+        "image": "/imgs/1.jpg",
+        "rating": 4.6,
+        "capacity": 800
+      },
+      {
+        "id": 7,
+        "title": "Seminar Hall",
+        "image": "/imgs/1.jpg",
+        "rating": 4.2,
+        "capacity": 150
+      },
+      {
+        "id": 8,
+        "title": "Workshop Room",
+        "image": "/imgs/1.jpg",
+        "rating": 4.1,
+        "capacity": 120
+      },
+      {
+        "id": 9,
+        "title": "Training Room",
+        "image": "/imgs/1.jpg",
+        "rating": 4.3,
+        "capacity": 180
+      }
+    ]
+  }

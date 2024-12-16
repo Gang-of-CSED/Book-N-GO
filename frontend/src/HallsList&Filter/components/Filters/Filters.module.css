@@ -1,0 +1,63 @@
+.container {
+  padding: 1rem;
+}
+
+.applyButton {
+  width: 100%;
+  padding: 0.5rem 0;
+  background-color: #f97316;
+  color: white;
+  border-radius: 0.25rem;
+  transition: background-color 0.2s;
+  margin-bottom: 1.5rem;
+}
+
+.applyButton:hover {
+  background-color: #ea580c;
+}
+
+.filterSection {
+  margin-bottom: 1.5rem;
+}
+
+.filterTitle {
+  color: white;
+  margin-bottom: 0.5rem;
+}
+
+.checkbox {
+  display: flex;
+  align-items: center;
+  color: white;
+  margin-bottom: 0.5rem;
+}
+
+.checkbox input {
+  margin-right: 0.5rem;
+}
+
+.sizeRange {
+  width: 100%;
+}
+
+.pagination {
+  display: flex;
+  gap: 0.5rem;
+  color: white;
+  margin-top: 2rem;
+}
+
+.pageButton {
+  padding: 0.25rem 0.5rem;
+  border: 1px solid #4b5563;
+  border-radius: 0.25rem;
+}
+
+.pageButton:hover {
+  background-color: #374151;
+}
+
+.activePage {
+  background-color: #f97316;
+  border-color: #f97316;
+}
