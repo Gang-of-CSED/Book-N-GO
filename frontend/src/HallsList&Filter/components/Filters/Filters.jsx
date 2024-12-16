@@ -10,7 +10,6 @@ import styles from './Filters.module.css';
 
 const Filters = () => {
   const { filters, updateFilters, fetchData } = useHalls();
-  const [selectedAmenities, setSelectedAmenities] = useState([]);
 
   const handleApplyFilters = () => {
     fetchData();

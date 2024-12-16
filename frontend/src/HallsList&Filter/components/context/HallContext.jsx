@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useCallback } from 'react';
+import React, { createContext, useContext, useRef, useState } from 'react';
 import { fetchHalls } from '../services/api';
 
 const HallContext = createContext();
@@ -12,65 +12,88 @@ export const useHalls = () => {
 };
 
 export const HallProvider = ({ children }) => {
-  const [halls, setHalls] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [totalPages, setTotalPages] = useState(1);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [filters, setFilters] = useState({
+  const hallsRef = useRef([]);
+  const loadingRef = useRef(false);
+  const totalPagesRef = useRef(1);
+  const currentPageRef = useRef(1);
+  const filtersRef = useRef({
     amenities: [],
     rating: 0,
     pageSize: 6,
-    page: 1
+    page: 1,
   });
-  const [sortBy, setSortBy] = useState('none');
-  const [searchWord, setSearchWord] = useState('');
+  const sortByRef = useRef('none');
+  const searchWordRef = useRef('');
 
-  const updateSortBy = useCallback((sortBy) => {
-    console.log("updateSortBy",sortBy);
-    setSortBy(sortBy);
-  }, []);
+  const triggerUpdate = useState()[1]; // Dummy state to force re-renders when necessary
 
-  const updateSearchWord = useCallback((searchWord) => {
-    console.log("updateSearchWord",searchWord);
-    setSearchWord(searchWord);
-  }, []);
+  const updateSortBy = (sortBy) => {
+    console.log('updateSortBy', sortBy);
+    sortByRef.current = sortBy;
+    triggerUpdate({});
+  };
 
-  const updateFilters = useCallback((newFilters) => {
-    console.log("updateFilters",newFilters);
-    setFilters(prev => ({ ...prev, ...newFilters, page: 1 }));
-  }, []);
+  const updateSearchWord = (searchWord) => {
+    console.log('updateSearchWord', searchWord);
+    searchWordRef.current = searchWord;
+    triggerUpdate({});
+  };
 
-  const updatePage = useCallback((page) => {
-    setFilters(prev => ({ ...prev, page }));
-  }, []);
+  const updateFilters = (newFilters) => {
+    console.log('updateFilters', newFilters);
+    filtersRef.current = { ...filtersRef.current, ...newFilters, page: 1 };
+    triggerUpdate({});
+  };
 
-  const fetchData = useCallback(async () => {
-    setLoading(true);
+  const updatePage = (page) => {
+    filtersRef.current.page = page;
+    triggerUpdate({});
+  };
+
+  const fetchData = async () => {
+    const body = {
+      ...filtersRef.current,
+      sortBy: sortByRef.current,
+      searchWord: searchWordRef.current,
+    };
+    console.log('fetchData', JSON.stringify(body, null, 2));
+    loadingRef.current = true;
+    triggerUpdate({});
     try {
-      const response = await fetchHalls(filters);
-
-      // console.log("halls response",response);
-      // setHalls(response.halls);
-      setHalls(response);
-      // setTotalPages(response.totalPages);
-      setTotalPages(2);
-      // setCurrentPage(response.currentPage);
-      setCurrentPage(1);
+      const response = await fetchHalls(body);
+      hallsRef.current = response;
+      totalPagesRef.current = 2; // Simulated value
+      currentPageRef.current = 1; // Simulated value
     } catch (error) {
       console.error('Error fetching halls:', error);
     } finally {
-      setLoading(false);
+      loadingRef.current = false;
+      triggerUpdate({});
     }
-  }, [filters]);
+  };
 
   const value = {
-    halls,
-    loading,
-    totalPages,
-    currentPage,
-    filters,
-    sortBy,
-    searchWord,
+    get halls() {
+      return hallsRef.current;
+    },
+    get loading() {
+      return loadingRef.current;
+    },
+    get totalPages() {
+      return totalPagesRef.current;
+    },
+    get currentPage() {
+      return currentPageRef.current;
+    },
+    get filters() {
+      return filtersRef.current;
+    },
+    get sortBy() {
+      return sortByRef.current;
+    },
+    get searchWord() {
+      return searchWordRef.current;
+    },
     updateFilters,
     updatePage,
     fetchData,
@@ -78,9 +101,5 @@ export const HallProvider = ({ children }) => {
     updateSearchWord,
   };
 
-  return (
-    <HallContext.Provider value={value}>
-      {children}
-    </HallContext.Provider>
-  );
+  return <HallContext.Provider value={value}>{children}</HallContext.Provider>;
 };
