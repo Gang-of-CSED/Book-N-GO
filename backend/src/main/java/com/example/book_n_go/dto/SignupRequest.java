@@ -1,11 +1,14 @@
 package com.example.book_n_go.dto;
 
 import com.example.book_n_go.enums.Role;
-import lombok.AllArgsConstructor;
+
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
 
 @Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class SignupRequest {

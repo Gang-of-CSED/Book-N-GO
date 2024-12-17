@@ -1,27 +1,25 @@
 package com.example.book_n_go.controller;
 
-import com.example.book_n_go.dto.AuthResponse;
-import com.example.book_n_go.dto.LoginRequest;
-import com.example.book_n_go.dto.SignupRequest;
-import com.example.book_n_go.enums.Role;
-import com.example.book_n_go.service.AuthService;
+import static org.hamcrest.Matchers.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.hamcrest.Matchers.is;
+import com.example.book_n_go.dto.AuthResponse;
+import com.example.book_n_go.dto.LoginRequest;
+import com.example.book_n_go.dto.SignupRequest;
+import com.example.book_n_go.enums.Role;
+import com.example.book_n_go.service.AuthService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class AuthControllerTest {
@@ -42,33 +40,55 @@ public class AuthControllerTest {
 
     @Test
     public void testSignup() throws Exception {
-        SignupRequest signupRequest = new SignupRequest();
-        signupRequest.setEmail("test@example.com");
-        signupRequest.setPassword("password");
-        signupRequest.setName("Test User");
-        signupRequest.setRole(Role.CLIENT);
+        SignupRequest signupRequest = SignupRequest.builder()
+                .email("test@example.com")
+                .password("password")
+                .name("Test User")
+                .phone("1234567890")
+                .role(Role.CLIENT)
+                .build();
 
-        doReturn("dummyToken").when(authService).signup(any(String.class), any(String.class), any(String.class), any(String.class), any(Role.class));
+        AuthResponse authResponse = new AuthResponse("dummyToken");
+
+        when(authService.signup(any(SignupRequest.class))).thenReturn(authResponse);
 
         mockMvc.perform(post("/auth/signup")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(new ObjectMapper().writeValueAsString(signupRequest)))
-                .andExpect(status().isCreated());
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.token", is("dummyToken")));
     }
 
     @Test
     public void testLogin() throws Exception {
-        LoginRequest loginRequest = new LoginRequest();
-        loginRequest.setEmail("test@example.com");
-        loginRequest.setPassword("password");
+        LoginRequest loginRequest = LoginRequest.builder()
+                .email("test@example.com")
+                .password("password")
+                .build();
 
-        when(authService.login(any(String.class), any(String.class)))
-                .thenReturn("dummyToken");
+        AuthResponse authResponse = new AuthResponse("dummyToken");
+
+        when(authService.login(any(LoginRequest.class))).thenReturn(authResponse);
 
         mockMvc.perform(post("/auth/login")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(new ObjectMapper().writeValueAsString(loginRequest)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.token", is("dummyToken")));
+    }
+
+    @Test
+    public void testLoginUnauthorized() throws Exception {
+        LoginRequest loginRequest = LoginRequest.builder()
+                .email("test@example.com")
+                .password("password")
+                .build();
+
+        when(authService.login(any(LoginRequest.class))).thenThrow(new RuntimeException("Unauthorized"));
+
+        mockMvc.perform(post("/auth/login")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(new ObjectMapper().writeValueAsString(loginRequest)))
+                .andExpect(status().isUnauthorized());
     }
 }

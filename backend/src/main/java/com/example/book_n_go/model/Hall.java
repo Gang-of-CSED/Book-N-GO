@@ -1,5 +1,7 @@
 package com.example.book_n_go.model;
 
+import com.example.book_n_go.enums.Amenity;
+
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -15,18 +17,26 @@ public class Hall {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
     @Column(nullable = false)
-    private String name;
-    @Column(nullable = false)
-    private long workspaceId;
-    @ManyToOne
-    @JoinColumn(name = "workspaceId", referencedColumnName = "id", insertable = false, updatable = false)
-    private Workspace workspace;
-    @Column(nullable = false)
     private int capacity;
     @Column(nullable = false)
     private String description;
+
+    @Column(nullable = false)
+    private String name;
+
     @Column(nullable = false)
     private double pricePerHour;
+
     @Column(nullable = false)
-    private double rating = 3;
+    private double rating;
+
+    @ManyToOne
+    @JoinColumn(nullable = false)
+    private Workspace workspace;
+
+    @ElementCollection(targetClass = Amenity.class)
+    @CollectionTable(name = "hall_amenities", joinColumns = @JoinColumn(name = "hall_id"))
+    @Column(name = "Amenity", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private Amenity[] amenities;
 }

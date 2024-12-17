@@ -1,27 +1,29 @@
 package com.example.book_n_go.controller;
 
-import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.util.List;
 import java.util.Optional;
 
-import com.example.book_n_go.model.Location;
-import com.example.book_n_go.repository.LocationRepo;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.boot.test.mock.mockito.MockBean;
+
+import com.example.book_n_go.config.TestConfig;
+import com.example.book_n_go.model.Location;
+import com.example.book_n_go.repository.LocationRepo;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import jakarta.persistence.criteria.CriteriaBuilder.In;
-
 @WebMvcTest(LocationController.class)
+@Import(TestConfig.class)
 @AutoConfigureMockMvc(addFilters = false)
 public class LocationControllerTest {
 
@@ -34,7 +36,7 @@ public class LocationControllerTest {
     private Location location;
 
     public void setUp() {
-        location = new Location(1, 101, "200", "New York");
+        location = new Location(1, 101, 200, "New York");
     }
 
     @Test

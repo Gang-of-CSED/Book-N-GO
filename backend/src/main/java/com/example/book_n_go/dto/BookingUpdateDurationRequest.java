@@ -1,15 +1,16 @@
 package com.example.book_n_go.dto;
 
+import java.time.LocalDateTime;
+
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class LoginRequest {
-    private String email;
-    private String password;
+public class BookingUpdateDurationRequest {
+    Long bookingId;
+    LocalDateTime startTime;
+    LocalDateTime endTime;
 }

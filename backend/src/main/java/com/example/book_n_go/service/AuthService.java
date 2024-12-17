@@ -1,54 +1,64 @@
 package com.example.book_n_go.service;
 
-import com.example.book_n_go.model.User;
-import com.example.book_n_go.security.JwtUtils;
-import com.example.book_n_go.enums.Role;
-import com.example.book_n_go.repository.UserRepository;
+import java.util.NoSuchElementException;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.example.book_n_go.dto.AuthResponse;
+import com.example.book_n_go.dto.LoginRequest;
+import com.example.book_n_go.dto.SignupRequest;
+import com.example.book_n_go.model.User;
+import com.example.book_n_go.repository.UserRepo;
+
+import lombok.RequiredArgsConstructor;
+
 @Service
+@RequiredArgsConstructor
 public class AuthService {
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepo repository;
+    private final PasswordEncoder passwordEncoder;
+    private final JwtService jwtService;
+    private final AuthenticationManager authenticationManager;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    public AuthResponse signup(SignupRequest request) {
+        var user = User.builder()
+                .email(request.getEmail())
+                .password(passwordEncoder.encode(request.getPassword()))
+                .name(request.getName())
+                .phone(request.getPhone())
+                .role(request.getRole())
+                .build();
 
-    @Autowired
-    private JwtUtils jwtUtils;
-
-    public String signup(String email, String password, String phone, String name, Role role) {
-        if (userRepository.findByEmail(email).isPresent()) {
-            throw new IllegalArgumentException("Email already exists");
-        }
-
-        User user = new User();
-        user.setEmail(email);
-        user.setName(name);
-        user.setPhone(phone);
-        user.setPassword(passwordEncoder.encode(password));
-        user.setRole(role);
-
-        userRepository.save(user);
-
-        return jwtUtils.generateJwtToken(email, role);
+        repository.save(user);
+        var jwt = jwtService.generateToken(user);
+        return AuthResponse.builder().token(jwt).build();
     }
 
 
-    public String login(String email, String password) {
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
-
-        if (!passwordEncoder.matches(password, user.getPassword())) {
-            throw new BadCredentialsException("Invalid password");
+    public AuthResponse login(LoginRequest request) throws Exception {
+        try {
+            authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                    request.getEmail(),
+                    request.getPassword()
+                )
+            );
+            var user = repository.findByEmail(request.getEmail()).orElseThrow(() -> new NoSuchElementException("User not found"));
+            var jwt = jwtService.generateToken(user);
+            return AuthResponse.builder().token(jwt).build();
+        } catch (NoSuchElementException e) {
+            throw new Exception("Invalid credentials", e);
         }
+    }
 
-        return jwtUtils.generateJwtToken(email, user.getRole());
+    public static User getRequestUser(){
+      return (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+      
     }
 }

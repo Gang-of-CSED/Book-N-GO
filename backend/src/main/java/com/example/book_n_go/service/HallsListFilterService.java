@@ -1,6 +1,7 @@
 package com.example.book_n_go.service;
 
 import com.example.book_n_go.dto.HallsFilterRequest;
+import com.example.book_n_go.enums.Amenity;
 import com.example.book_n_go.model.Hall;
 import com.example.book_n_go.repository.HallRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,13 +23,14 @@ public class HallsListFilterService {
         Sort sort = "none".equals(request.getSortBy()) ?  Sort.by(Sort.Direction.DESC, "id") : Sort.by(Sort.Direction.DESC, request.getSortBy());
 
         return hallRepo.findAll(spec, sort);
+        // return hallRepo.findAll(spec);
     }
 
     private Specification<Hall> buildSpecification(HallsFilterRequest request) {
         return (root, query, criteriaBuilder) -> {
             Specification<Hall> spec = Specification.where(null);
 
-            // Filter by rating
+            // // Filter by rating
             if (request.getRating() != null) {
                 spec = spec.and((hall, query1, cB) -> 
                     cB.greaterThanOrEqualTo(hall.get("rating"), request.getRating()));
@@ -40,13 +42,14 @@ public class HallsListFilterService {
                     cB.like(cB.lower(hall.get("name")), "%" + request.getSearchWord().toLowerCase() + "%"));
             }
 
-            // Filter by amenities (wait for ahmed hassan to add amenities to the Hall model)
-            // if (request.getAmenities() != null && !request.getAmenities().isEmpty()) {
-            //     for (String amenity : request.getAmenities()) {
-            //         spec = spec.and((hall, query1, cB) ->
-            //             cB.like(cB.lower(hall.get("amenities")), "%" + amenity.toLowerCase() + "%"));
-            //     }
-            // }
+            // // Filter by amenities (wait for ahmed hassan to add amenities to the Hall model)
+            if (request.getAmenities() != null && !request.getAmenities().isEmpty()) {
+                for (String amenity : request.getAmenities()) {
+                    Amenity amenityEnum = Amenity.valueOf(amenity.toUpperCase().replace(" ", "_"));
+                    spec = spec.and((hall, query1, cB) ->
+                        cB.isMember(amenityEnum, hall.get("amenities")));
+                }
+            }
 
             return spec.toPredicate(root, query, criteriaBuilder);
         };

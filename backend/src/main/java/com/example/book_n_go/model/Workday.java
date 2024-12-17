@@ -19,14 +19,13 @@ public class Workday {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
     @Column(nullable = false)
-    private long workspaceId;
-    @ManyToOne
-    @JoinColumn(name = "workspaceId", referencedColumnName = "id", insertable = false, updatable = false)
-    private Workspace workspace;
-    @Column(nullable = false)
     private Time startTime;
     @Column(nullable = false)
     private Time endTime;
     @Column(nullable = false)
     private Day weekDay;
+    
+    @ManyToOne
+    @JoinColumn(nullable = false)
+    private Workspace workspace;
 }

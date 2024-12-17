@@ -1,22 +1,28 @@
 package com.example.book_n_go.controller;
 
-import com.example.book_n_go.repository.LocationRepo;
-import com.example.book_n_go.repository.WorkspaceRepo;
-import com.example.book_n_go.model.Location;
-import com.example.book_n_go.model.Workspace;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.http.*;
-import org.springframework.security.core.context.SecurityContext;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.security.Security;
-import java.util.*;
-
-import org.springframework.stereotype.Controller;
+import com.example.book_n_go.model.Location;
+import com.example.book_n_go.model.User;
+import com.example.book_n_go.model.Workspace;
+import com.example.book_n_go.repository.LocationRepo;
+import com.example.book_n_go.repository.WorkspaceRepo;
+import com.example.book_n_go.service.AuthService;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:3000")
 public class WorkspaceController {
     @Autowired
     private WorkspaceRepo workspaceRepo;
@@ -49,38 +55,21 @@ public class WorkspaceController {
 
     @PostMapping("/workspaces")
     public ResponseEntity<Workspace> createWorkspace(@RequestBody Workspace workspace) {
-        try {
-            Workspace _workspace = workspaceRepo.save(workspace);
-            return new ResponseEntity<>(_workspace, HttpStatus.CREATED);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        User provider = AuthService.getRequestUser();
+        workspace.setProvider(provider);
+        Location location = locationRepo.save(workspace.getLocation());
+        workspace.setLocation(location);
+        Workspace _workspace = workspaceRepo.save(workspace);
+        return new ResponseEntity<>(_workspace, HttpStatus.CREATED);
     }
 
     @PutMapping("/workspaces/{id}")
     public ResponseEntity<Workspace> updateWorkspace(@PathVariable("id") long id, @RequestBody Workspace workspace) {
         Optional<Workspace> workspaceData = workspaceRepo.findById(id);
         if (workspaceData.isPresent()) {
-            System.out.println(workspace.getLocationId());
             Workspace _workspace = workspaceData.get();
-            _workspace.setProviderId(workspace.getProviderId());
-            _workspace.setLocationId(workspace.getLocationId());
-            _workspace.setName(workspace.getName());
-            _workspace.setDescription(workspace.getDescription());
-            Optional<Location> locationData = locationRepo.findById(workspace.getLocationId());
-            if (locationData.isPresent()) {
-                Location location = locationData.get();
-                if (location.getCity() != workspace.getLocation().getCity()
-                        || location.getStreet() != workspace.getLocation().getStreet()
-                        || location.getDepartmentNumber() != workspace.getLocation().getDepartmentNumber()) {
-                    location.setCity(workspace.getLocation().getCity());
-                    location.setStreet(workspace.getLocation().getStreet());
-                    location.setDepartmentNumber(workspace.getLocation().getDepartmentNumber());
-                    locationRepo.save(location);
-                }
-            } else {
-                locationRepo.save(workspace.getLocation());
-            }
+            _workspace.setProvider(workspace.getProvider());
+            _workspace.setLocation(workspace.getLocation());
             return new ResponseEntity<>(workspaceRepo.save(_workspace), HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);

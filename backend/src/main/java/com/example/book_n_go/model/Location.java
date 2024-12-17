@@ -17,7 +17,7 @@ public class Location {
     @Column(nullable = false)
     private int departmentNumber;
     @Column(nullable = false)
-    private String street;
+    private int streetNumber;
     @Column(nullable = false)
     private String city;
 }

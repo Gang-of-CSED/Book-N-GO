@@ -1,15 +1,15 @@
 package com.example.book_n_go.dto;
 
+import com.example.book_n_go.enums.Status;
+
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class LoginRequest {
-    private String email;
-    private String password;
+public class BookingUpdateStatusRequest {
+    Long bookingId;
+    Status status;
 }

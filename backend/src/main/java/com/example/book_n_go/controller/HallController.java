@@ -1,26 +1,43 @@
 package com.example.book_n_go.controller;
 
-import com.example.book_n_go.repository.HallRepo;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.*;
-import com.example.book_n_go.model.Hall;
-import java.util.*;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.method.P;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.example.book_n_go.dto.HallsFilterRequest;
+import com.example.book_n_go.model.Hall;
+import com.example.book_n_go.model.Workspace;
+import com.example.book_n_go.repository.HallRepo;
+import com.example.book_n_go.repository.WorkspaceRepo;
+import com.example.book_n_go.service.AuthService;
 import com.example.book_n_go.service.HallsListFilterService;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:3000")
+@RequestMapping("/workspace/{workspaceId}")
 public class HallController {
     @Autowired
     private HallRepo hallRepo;
+    @Autowired
+    private WorkspaceRepo workspaceRepo;
 
     @GetMapping("/halls")
-    public ResponseEntity<List<Hall>> getHalls() {
+    public ResponseEntity<List<Hall>> getHalls(@PathVariable("workspaceId") long workspaceId) {
         try {
             List<Hall> halls = new ArrayList<Hall>();
-            hallRepo.findAll().forEach(halls::add);
+            hallRepo.findByWorkspaceId(workspaceId).forEach(halls::add);
             if (halls.isEmpty()) {
                 return new ResponseEntity<>(HttpStatus.NO_CONTENT);
             }
@@ -40,27 +57,15 @@ public class HallController {
         }
     }
 
-    @GetMapping("/workspaces/{workspaceId}/halls")
-    public ResponseEntity<List<Hall>> getHallsByWorkspaceId(@PathVariable("workspaceId") long workspaceId) {
-        try {
-            List<Hall> halls = hallRepo.findByWorkspaceId(workspaceId);
-            if (halls.isEmpty()) {
-                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-            }
-            return new ResponseEntity<>(halls, HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-
     @PostMapping("/halls")
-    public ResponseEntity<Hall> createHall(@RequestBody Hall hall) {
-        try {
-            Hall _hall = hallRepo.save(hall);
-            return new ResponseEntity<>(_hall, HttpStatus.CREATED);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+    public ResponseEntity<Hall> createHall(@RequestBody Hall hall, @PathVariable("workspaceId") long workspaceId) {
+        Workspace workspace = workspaceRepo.findById(workspaceId).get();
+        if(workspace.getProvider().getId() != AuthService.getRequestUser().getId()){
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
+        hall.setWorkspace(workspace);
+        Hall _hall = hallRepo.save(hall);
+        return new ResponseEntity<>(_hall, HttpStatus.CREATED);
     }
 
     @PutMapping("/halls/{id}")
@@ -68,7 +73,7 @@ public class HallController {
         Optional<Hall> hallData = hallRepo.findById(id);
         if (hallData.isPresent()) {
             Hall _hall = hallData.get();
-            _hall.setWorkspaceId(hall.getWorkspaceId());
+            _hall.setWorkspace(hall.getWorkspace());
             _hall.setCapacity(hall.getCapacity());
             _hall.setDescription(hall.getDescription());
             _hall.setPricePerHour(hall.getPricePerHour());
@@ -92,13 +97,13 @@ public class HallController {
     private HallsListFilterService hallsListFilterService;
     @PostMapping("/filterHalls")
     public ResponseEntity<List<Hall>> filterHalls(@RequestBody HallsFilterRequest request) {
-        try {
+        // try {
+            System.out.println("Request: " + request);
             List<Hall> halls = hallsListFilterService.applyCriterias(request);
             
             return new ResponseEntity<>(halls, HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        // } catch (Exception e) {
+        //     return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        // }
     }
-    
 }
