@@ -1,17 +1,21 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import Rating from './Rating';
 import styles from './Hall.module.css';
-
 import dummyImg from '../../../assets/1.jpg';
 
 const HallCard = ({ hall }) => {
-  return (
-    <div className={styles.card}>
-      <img 
-        // src={hall.image}
-        // alt={hall.title}
-       src={dummyImg} alt={hall.name} 
+  const navigate = useNavigate();
 
+  const handleCardClick = () => {
+    navigate(`/hall/${hall.id}`);
+  };
+
+  return (
+    <div className={styles.card} onClick={handleCardClick}>
+      <img 
+        src={dummyImg} 
+        alt={hall.name} 
         className={styles.image}
       />
       <div className={styles.content}>
@@ -21,7 +25,6 @@ const HallCard = ({ hall }) => {
           <span className={styles.capacity}>
             Capacity: {hall.capacity}
             <p>Price per hour: ${hall.pricePerHour}</p>
-
           </span>
         </div>
       </div>
