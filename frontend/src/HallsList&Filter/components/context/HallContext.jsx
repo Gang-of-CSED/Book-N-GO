@@ -59,6 +59,7 @@ export const HallProvider = ({ children }) => {
     console.log('fetchData', JSON.stringify(body, null, 2));
     loadingRef.current = true;
     triggerUpdate({});
+    
     try {
       const response = await fetchHalls(body);
       hallsRef.current = response;

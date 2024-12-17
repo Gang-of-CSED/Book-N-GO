@@ -37,7 +37,7 @@ public class HallsListFilterService {
                             return Integer.compare(h2.getCapacity(), h1.getCapacity());
                         }
                         else if(sortBy.equalsIgnoreCase("pricePerHour")) {
-                            return Double.compare(h1.getPricePerHour(), h2.getPricePerHour());
+                            return Double.compare(h2.getPricePerHour(), h1.getPricePerHour());
                         }
                         return 0;
                     })

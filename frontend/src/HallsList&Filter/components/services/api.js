@@ -77,15 +77,20 @@
 //     currentPage: params.page
 //   };
 // };
-export const fetchHalls = async () => {
+export const fetchHalls = async (requestBody) => {
   try {
-    const response = await fetch('http://localhost:3001/halls');
+    const response = await fetch('http://localhost:8080/filterHalls', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(requestBody),
+    });
 
     if (!response.ok) {
       throw new Error('Network response was not ok');
     }
     const data = await response.json();
-    // console.log(data);
     return data;
   } catch (error) {
     console.error('Failed to fetch halls:', error);

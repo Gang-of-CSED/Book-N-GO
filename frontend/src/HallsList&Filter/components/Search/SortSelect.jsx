@@ -5,7 +5,7 @@ const sortOptions = [
   { value: 'none', label: 'None' },
   { value: 'rating', label: 'Rating' },
   { value: 'capacity', label: 'Capacity' },
-  { value: 'title', label: 'Title' }
+  { value: 'pricePerHour', label: 'Price Per Hour' }
 ];
 
 const SortSelect = ({ value, onChange }) => {
