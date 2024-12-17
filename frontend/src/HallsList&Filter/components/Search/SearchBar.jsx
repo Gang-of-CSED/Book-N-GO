@@ -5,12 +5,13 @@ import { useHalls } from '../context/HallContext';
 import styles from './Search.module.css';
 
 const SearchBar = () => {
-  const { updateFilters, fetchData, updateSearchWord, updateSortBy } = useHalls();
+  const {fetchData, updateSearchWord, updateSortBy } = useHalls();
   const [searchTerm, setSearchTerm] = useState('');
   const [sortBy, setSortBy] = useState('none');
 
   const handleSearch = () => {
-    updateSearchWord(searchTerm);
+    const trimmedSearchTerm = searchTerm.trim();
+    updateSearchWord(trimmedSearchTerm);
     fetchData();
   };
 

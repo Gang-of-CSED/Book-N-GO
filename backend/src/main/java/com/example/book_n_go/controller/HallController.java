@@ -94,9 +94,7 @@ public class HallController {
     public ResponseEntity<List<Hall>> filterHalls(@RequestBody HallsFilterRequest request) {
         try {
             List<Hall> halls = hallsListFilterService.applyCriterias(request);
-            if (halls.isEmpty()) {
-                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-            }
+            
             return new ResponseEntity<>(halls, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
