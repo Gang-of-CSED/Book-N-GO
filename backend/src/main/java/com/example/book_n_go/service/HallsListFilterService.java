@@ -4,10 +4,11 @@ import com.example.book_n_go.dto.HallsFilterRequest;
 import com.example.book_n_go.model.Hall;
 import com.example.book_n_go.repository.HallRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class HallsListFilterService {
@@ -16,57 +17,38 @@ public class HallsListFilterService {
     private HallRepo hallRepo;
 
     public List<Hall> applyCriterias(HallsFilterRequest request) {
-        List<Hall> halls = hallRepo.findAll();
+        Specification<Hall> spec = buildSpecification(request);
 
-        halls = sortHalls(halls, request.getSortBy());
-        // halls = filterByAmenities(halls, request.getAmenities()); // Uncomment if needed
-        halls = filterByRating(halls, request.getRating());
-        halls = searchHalls(halls, request.getSearchWord());
+        Sort sort = Sort.by(Sort.Direction.DESC, request.getSortBy());
 
-        return halls;
+        return hallRepo.findAll(spec, sort);
     }
 
-    public List<Hall> sortHalls(List<Hall> halls, String sortBy) {
-        if (sortBy != null) {
-            return halls.stream()
-                    .sorted((h1, h2) -> {
-                        if (sortBy.equalsIgnoreCase("rating")) {
-                            return Double.compare(h2.getRating(), h1.getRating());
-                        }
-                        else if (sortBy.equalsIgnoreCase("capacity")) {
-                            return Integer.compare(h2.getCapacity(), h1.getCapacity());
-                        }
-                        else if(sortBy.equalsIgnoreCase("pricePerHour")) {
-                            return Double.compare(h2.getPricePerHour(), h1.getPricePerHour());
-                        }
-                        return 0;
-                    })
-                    .collect(Collectors.toList());
-        }
-        return halls;
-    }
+    private Specification<Hall> buildSpecification(HallsFilterRequest request) {
+        return (root, query, criteriaBuilder) -> {
+            Specification<Hall> spec = Specification.where(null);
 
-    // Uncomment and implement this method if needed
-    // public List<Hall> filterByAmenities(List<Hall> halls, List<String> amenities) {
-    //     if (amenities != null && !amenities.isEmpty()) {
-    //         return halls.stream()
-    //                 .filter(hall -> hall.getAmenities().containsAll(amenities))
-    //                 .collect(Collectors.toList());
-    //     }
-    //     return halls;
-    // }
+            // Filter by rating
+            if (request.getRating() != null) {
+                spec = spec.and((hall, query1, cB) -> 
+                    cB.greaterThanOrEqualTo(hall.get("rating"), request.getRating()));
+            }
 
-    public List<Hall> filterByRating(List<Hall> halls, Integer rating) {
-        if (rating != null) {
-            return halls.stream().filter(hall -> hall.getRating() >= rating).collect(Collectors.toList());
-        }
-        return halls;
-    }
+            // Search by keyword in name
+            if (request.getSearchWord() != null && !request.getSearchWord().isEmpty()) {
+                spec = spec.and((hall, query1, cB) ->
+                    cB.like(cB.lower(hall.get("name")), "%" + request.getSearchWord().toLowerCase() + "%"));
+            }
 
-    public List<Hall> searchHalls(List<Hall> halls, String searchWord) {
-        if (searchWord != null && !searchWord.isEmpty()) {
-            return halls.stream().filter(hall -> hall.getName().toLowerCase().contains(searchWord.toLowerCase())).collect(Collectors.toList());
-        }
-        return halls;
+            // Filter by amenities (wait for ahmed hassan to add amenities to the Hall model)
+            // if (request.getAmenities() != null && !request.getAmenities().isEmpty()) {
+            //     for (String amenity : request.getAmenities()) {
+            //         spec = spec.and((hall, query1, cB) ->
+            //             cB.like(cB.lower(hall.get("amenities")), "%" + amenity.toLowerCase() + "%"));
+            //     }
+            // }
+
+            return spec.toPredicate(root, query, criteriaBuilder);
+        };
     }
 }

@@ -205,4 +205,7 @@ public class HallControllerTest {
         mockMvc.perform(delete("/halls/{id}", 1))
                 .andExpect(status().isInternalServerError());
     }
+
+
+    // Test for the filter method
 }
