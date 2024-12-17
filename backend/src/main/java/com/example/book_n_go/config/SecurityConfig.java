@@ -39,7 +39,9 @@ public class SecurityConfig {
                         "/bookings/all", "/bookings/user/{id}", "/bookings/hall/{id}", "/bookings/workspace/{id}",
                         "/bookings/updateStatus", "/bookings/updateDuration", "/bookings/delete/{id}"
                         ).permitAll()
-                .anyRequest().authenticated()
+                .   anyRequest().permitAll()
+                // .anyRequest().authenticated()
+                
             )
             .sessionManagement(session -> session
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)

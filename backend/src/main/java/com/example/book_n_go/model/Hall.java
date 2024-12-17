@@ -1,6 +1,6 @@
 package com.example.book_n_go.model;
 
-import com.example.book_n_go.enums.Aminity;
+import com.example.book_n_go.enums.Amenity;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -20,16 +20,23 @@ public class Hall {
     private int capacity;
     @Column(nullable = false)
     private String description;
+
+    @Column(nullable = false)
+    private String name;
+
     @Column(nullable = false)
     private double pricePerHour;
+
+    @Column(nullable = false)
+    private double rating;
 
     @ManyToOne
     @JoinColumn(nullable = false)
     private Workspace workspace;
 
-    @ElementCollection(targetClass = Aminity.class)
-    @CollectionTable(name = "hall_aminities", joinColumns = @JoinColumn(name = "hall_id"))
-    @Column(name = "aminity", nullable = false)
+    @ElementCollection(targetClass = Amenity.class)
+    @CollectionTable(name = "hall_amenities", joinColumns = @JoinColumn(name = "hall_id"))
+    @Column(name = "Amenity", nullable = false)
     @Enumerated(EnumType.STRING)
-    private Aminity[] aminities;
+    private Amenity[] amenities;
 }

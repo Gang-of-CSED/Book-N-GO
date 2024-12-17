@@ -4,7 +4,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public enum Aminity {
+public enum Amenity {
   
   SCREEN("Screen"),
   PROJECTOR("Projector"),
@@ -13,5 +13,5 @@ public enum Aminity {
   WHITE_BOARD("White Board");
 
   @Getter
-  private final String aminity;
+  private final String amenity;
 }
