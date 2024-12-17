@@ -32,6 +32,19 @@ export const HallProvider = ({ children }) => {
     sortByRef.current = sortBy;
     triggerUpdate({});
   };
+  const resetFilter = () => {
+    filtersRef.current = {
+      amenities: [],
+      rating: 0,
+      pageSize: 6,
+      page: 1,
+    };
+    triggerUpdate({});
+  }
+
+
+
+
 
   const updateSearchWord = (searchWord) => {
     console.log('updateSearchWord', searchWord);
@@ -100,6 +113,7 @@ export const HallProvider = ({ children }) => {
     fetchData,
     updateSortBy,
     updateSearchWord,
+    resetFilter
   };
 
   return <HallContext.Provider value={value}>{children}</HallContext.Provider>;

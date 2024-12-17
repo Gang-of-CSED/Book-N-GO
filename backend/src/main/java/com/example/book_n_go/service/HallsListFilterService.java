@@ -19,7 +19,7 @@ public class HallsListFilterService {
     public List<Hall> applyCriterias(HallsFilterRequest request) {
         Specification<Hall> spec = buildSpecification(request);
 
-        Sort sort = Sort.by(Sort.Direction.DESC, request.getSortBy());
+        Sort sort = "none".equals(request.getSortBy()) ?  Sort.by(Sort.Direction.DESC, "id") : Sort.by(Sort.Direction.DESC, request.getSortBy());
 
         return hallRepo.findAll(spec, sort);
     }
