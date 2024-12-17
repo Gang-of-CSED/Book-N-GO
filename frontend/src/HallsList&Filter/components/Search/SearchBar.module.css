@@ -1,0 +1,16 @@
+.container {
+  display: flex;
+  gap: 1rem;
+  padding: 1rem;
+}
+
+.searchButton {
+  padding: 0.5rem 1.5rem;
+  background-color: #E5EEF1;
+  border-radius: 0.25rem;
+  transition: background-color 0.2s;
+}
+
+.searchButton:hover {
+  background-color: #d1dde1;
+}
