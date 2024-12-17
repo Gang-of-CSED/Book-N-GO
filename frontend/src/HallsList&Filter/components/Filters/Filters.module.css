@@ -5,7 +5,7 @@
 .applyButton {
   width: 100%;
   padding: 0.5rem 0;
-  background-color: #f97316;
+  background-color: #FF9944;
   color: white;
   border-radius: 0.25rem;
   transition: background-color 0.2s;
@@ -58,6 +58,6 @@
 }
 
 .activePage {
-  background-color: #f97316;
-  border-color: #f97316;
+  background-color: #FF9944;
+  border-color: #FF9944;
 }

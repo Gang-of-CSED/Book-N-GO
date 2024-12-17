@@ -9,12 +9,15 @@ import { useHalls } from '../context/HallContext';
 import styles from './Filters.module.css';
 
 const Filters = () => {
-  const { filters, updateFilters, fetchData } = useHalls();
+  const { filters, updateFilters, fetchData,resetFilter } = useHalls();
 
   const handleApplyFilters = () => {
     fetchData();
   };
-
+  const handleRestFilters = () => {
+    resetFilter();
+    fetchData();
+  };
   return (
     <div className={styles.container}>
       <AmenitiesFilter 
@@ -34,9 +37,15 @@ const Filters = () => {
         onClick={handleApplyFilters}
         className={styles.applyButton}
       >
-        Apply Filters
+        Apply 
       </button>
-      <Pagination />
+      <button
+        onClick={handleRestFilters}
+        className={styles.applyButton}
+      >
+        Reset 
+      </button>
+      {/* <Pagination /> */}
     </div>
   );
 };

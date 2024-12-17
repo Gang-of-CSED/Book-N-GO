@@ -10,7 +10,7 @@
 
 .searchButton {
   padding: 0.5rem 1.5rem;
-  background-color: #E5EEF1;
+  background-color: #C8E1E8;
   border-radius: 0.25rem;
   transition: background-color 0.2s;
 }
@@ -27,7 +27,7 @@
 .select {
   width: 100%;
   padding: 0.5rem;
-  background-color: #E5EEF1;
+  background-color: #C8E1E8;
   border-radius: 0.25rem;
   appearance: none;
 }
