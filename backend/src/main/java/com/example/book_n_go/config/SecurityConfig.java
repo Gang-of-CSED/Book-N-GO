@@ -40,11 +40,12 @@ public class SecurityConfig {
         http.cors().configurationSource(corsConfigurationSource).and()
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
-
                 .requestMatchers("/auth/signup", "/auth/login", "/auth/google", "/auth/oauth2-success", "/auth/oauth2-success/**").permitAll()
+                .requestMatchers("/oauth2/authorization/google").permitAll()
                 .anyRequest().authenticated()
             )
             .oauth2Login(oauth2 -> oauth2
+                .loginPage("/oauth2/authorization/google")
                 .defaultSuccessUrl("/auth/oauth2-success", true)
             )
             .formLogin(form -> form.disable())
