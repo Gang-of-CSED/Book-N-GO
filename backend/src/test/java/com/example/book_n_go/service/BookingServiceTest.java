@@ -141,7 +141,7 @@ public class BookingServiceTest {
     public void testGetHallSchedules() {
         when(hallRepo.existsById(1L)).thenReturn(true);
         when(hallRepo.findById(1L)).thenReturn(Optional.of(hall));
-        when(workdayRepo.findByWorkspaceId(any(Long.class))).thenReturn(Arrays.asList(workday));
+        when(workdayRepo.findByWorkspace(any(Workspace.class))).thenReturn(Arrays.asList(workday));
         when(bookingRepo.findByEndTimeBefore(any(LocalDateTime.class))).thenReturn(Arrays.asList(booking));
 
         HallSchedule hallSchedule = bookingService.getHallSchedules(1L, LocalDateTime.now().plusDays(1));
