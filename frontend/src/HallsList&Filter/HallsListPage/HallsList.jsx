@@ -24,6 +24,9 @@ export const HallsList = () => {
             </aside>
             <main className={styles.main}>
               <HallGrid />
+            <div className={styles.paginationContainer} >
+              <Pagination />
+            </div>
             </main>
           </div>
         </div>
