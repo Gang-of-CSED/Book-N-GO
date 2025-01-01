@@ -21,8 +21,8 @@ function WeekCalender({hallId, startDate}) {
         events[i] = results[i].map((res, index) => ({
           id: `${i}-${index}`,
           text: "Available Slot",
-          start: res["startTime"],
-          end: res["endTime"]
+          start: res["startTime"].split('.')[0],
+          end: res["endTime"].split('.')[0],
         }));
       }
       setEvents(events);
