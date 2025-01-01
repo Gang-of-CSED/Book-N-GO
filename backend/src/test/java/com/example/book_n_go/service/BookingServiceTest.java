@@ -39,7 +39,7 @@ import com.example.book_n_go.repository.UserRepo;
 import com.example.book_n_go.repository.WorkdayRepo;
 import com.example.book_n_go.repository.WorkspaceRepo;
 
-@SpringBootTest
+// @SpringBootTest
 public class BookingServiceTest {
 
     @Mock
